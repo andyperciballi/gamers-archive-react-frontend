@@ -9,6 +9,7 @@ import HomePage from './pages/HomePage';
 import Dashboard from './pages/Dashboard';
 import { UserContext } from './contexts/UserContext';
 import Library from './pages/Library';
+import SearchGames from "./pages/SearchGames"
 
 function App() {
   const makeToastMessage = (text) => toast(text);
@@ -27,6 +28,8 @@ function App() {
         <Route path="/sign-in" element={<SignInForm />} />
 
         <Route path="/library" element={user ? <Library /> : <HomePage />} />
+
+        <Route path="/search" element={<SearchGames />} />
       </Routes>
 
       <ToastContainer

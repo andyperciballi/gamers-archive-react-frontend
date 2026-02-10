@@ -1,7 +1,7 @@
-import { useContext } from "react";
-import { UserContext } from "../../contexts/UserContext";
-import { Link } from "react-router";
-import { toast } from "react-toastify";
+import { useContext } from 'react';
+import { UserContext } from '../../contexts/UserContext';
+import { Link } from 'react-router';
+import { toast } from 'react-toastify';
 
 const Navbar = () => {
   const { user, setUser } = useContext(UserContext);
@@ -10,7 +10,7 @@ const Navbar = () => {
     localStorage.removeItem('token');
     setUser(null);
     toast('Successfully Logged Out');
-  }
+  };
 
   return (
     <nav>
@@ -22,12 +22,16 @@ const Navbar = () => {
         {user ? (
           <>
             <li>{`Welcome back ${user.username}`}</li>
-            {/* New Library link */}
             <li>
               <Link to="/library">My Library</Link>
             </li>
             <li>
-              <Link to="/" onClick={handleLogOut}>Log Out</Link>
+              <Link to="/search">Search Games</Link>
+            </li>
+            <li>
+              <Link to="/" onClick={handleLogOut}>
+                Log Out
+              </Link>
             </li>
           </>
         ) : (
