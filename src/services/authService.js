@@ -55,6 +55,7 @@ const signIn = async (formData) => {
     throw new Error("Invalid Response from server");
   } catch (error) {
     console.log(error);
+    throw error
   }
 };
 export { signUp, signIn };
