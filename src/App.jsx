@@ -1,14 +1,14 @@
-import { useState, useContext } from "react";
-import "./App.css";
-import Navbar from "./components/NavBar/NavBar";
-import SignUpForm from "./components/SignUpForm/SignUpForm";
-import { Routes, Route } from "react-router";
-import { ToastContainer, toast } from "react-toastify";
-import SignInForm from "./components/SignInForm/SignInForm";
-import HomePage from "./components/HomePage/HomePage";
-import Dashboard from "./components/Dashboard/Dashboard";
-import { UserContext } from "./contexts/UserContext";
-import Library from "./components/Library/Library";
+import { useState, useContext } from 'react';
+import './App.css';
+import Navbar from './components/NavBar/NavBar';
+import SignUpForm from './components/SignUpForm/SignUpForm';
+import { Routes, Route } from 'react-router';
+import { ToastContainer, toast } from 'react-toastify';
+import SignInForm from './components/SignInForm/SignInForm';
+import HomePage from './pages/HomePage';
+import Dashboard from './pages/Dashboard';
+import { UserContext } from './contexts/UserContext';
+import Library from './pages/Library';
 
 function App() {
   const makeToastMessage = (text) => toast(text);
@@ -47,19 +47,18 @@ function App() {
 
 export default App;
 
-
 function Container({ children }) {
   return (
     <div
       style={{
-        height: "50vh",
-        width: "50vw",
-        backgroundColor: "white",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "item",
-        color: "black",
+        height: '50vh',
+        width: '50vw',
+        backgroundColor: 'white',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'item',
+        color: 'black',
       }}
     >
       {children}

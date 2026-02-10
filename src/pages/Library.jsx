@@ -1,20 +1,23 @@
-import { useState, useEffect, useContext } from "react";
-import { UserContext } from "../../contexts/UserContext";
+import { useState, useEffect, useContext } from 'react';
+import { UserContext } from '../contexts/UserContext';
 
 const Library = () => {
   const { user } = useContext(UserContext);
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_SERVER_URL}/games`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        const res = await fetch(
+          `${import.meta.env.VITE_BACKEND_SERVER_URL}/games`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
           },
-        });
+        );
 
         const data = await res.json();
 
