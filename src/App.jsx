@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import "./App.css";
-import Navbar from "./components/Navbar/Navbar";
+import Navbar from "./components/NavBar/NavBar";
 import SignUpForm from "./components/SignUpForm/SignUpForm";
 import { Routes, Route } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
