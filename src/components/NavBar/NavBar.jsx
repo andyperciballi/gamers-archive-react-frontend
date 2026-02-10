@@ -7,9 +7,9 @@ const Navbar = () => {
   const { user, setUser } = useContext(UserContext);
 
   const handleLogOut = () => {
-    localStorage.removeItem('token')
-    setUser(null)
-    toast('Successfully Logged Out')
+    localStorage.removeItem('token');
+    setUser(null);
+    toast('Successfully Logged Out');
   }
 
   return (
@@ -22,6 +22,10 @@ const Navbar = () => {
         {user ? (
           <>
             <li>{`Welcome back ${user.username}`}</li>
+            {/* New Library link */}
+            <li>
+              <Link to="/library">My Library</Link>
+            </li>
             <li>
               <Link to="/" onClick={handleLogOut}>Log Out</Link>
             </li>
