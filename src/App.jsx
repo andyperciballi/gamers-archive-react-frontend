@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard';
 import { UserContext } from './contexts/UserContext';
 import Library from './pages/Library';
 import GameEdit from "./pages/GameEdit";
+import SearchGames from "./pages/SearchGames"
 
 function App() {
   const makeToastMessage = (text) => toast(text);
@@ -36,6 +37,10 @@ function App() {
   />
 </Routes>
 
+        <Route path="/library" element={user ? <Library /> : <HomePage />} />
+
+        <Route path="/search" element={<SearchGames />} />
+      </Routes>
 
       <ToastContainer
         position="top-right"
