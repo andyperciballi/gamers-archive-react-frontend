@@ -2,13 +2,14 @@ import { useState, useContext } from 'react';
 import './App.css';
 import Navbar from './components/NavBar/NavBar';
 import SignUpForm from './components/SignUpForm/SignUpForm';
-import { Routes, Route } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import SignInForm from './components/SignInForm/SignInForm';
 import HomePage from './pages/HomePage';
 import Dashboard from './pages/Dashboard';
 import { UserContext } from './contexts/UserContext';
 import Library from './pages/Library';
+import GameEdit from "./pages/GameEdit";
 
 function App() {
   const makeToastMessage = (text) => toast(text);
@@ -19,15 +20,22 @@ function App() {
       <Navbar />
 
       <Routes>
-        <Route path="/" element={user ? <Dashboard /> : <HomePage />} />
-        <Route
-          path="/sign-up"
-          element={<SignUpForm makeToastMessage={makeToastMessage} />}
-        />
-        <Route path="/sign-in" element={<SignInForm />} />
+  <Route path="/" element={user ? <Dashboard /> : <HomePage />} />
 
-        <Route path="/library" element={user ? <Library /> : <HomePage />} />
-      </Routes>
+  <Route
+    path="/sign-up"
+    element={<SignUpForm makeToastMessage={makeToastMessage} />}
+  />
+  <Route path="/sign-in" element={<SignInForm />} />
+
+  <Route path="/library" element={user ? <Library /> : <HomePage />} />
+
+  <Route
+    path="/games/:gameId/edit"
+    element={user ? <LibraryEdit /> : <HomePage />}
+  />
+</Routes>
+
 
       <ToastContainer
         position="top-right"
