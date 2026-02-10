@@ -52,7 +52,7 @@ const SignUpForm = ({ makeToastMessage }) => {
           <label htmlFor="username">Username:</label>
           <input
             type="text"
-            id="name"
+            id="username"
             value={username}
             name="username"
             onChange={handleChange}
@@ -83,7 +83,7 @@ const SignUpForm = ({ makeToastMessage }) => {
         </div>
         <div>
           <button disabled={isFormInvalid()}>Sign Up</button>
-          <button onClick={() => navigate("/")}>Cancel</button>
+          <button type="button" onClick={() => navigate("/")}>Cancel</button>
         </div>
       </form>
     </main>

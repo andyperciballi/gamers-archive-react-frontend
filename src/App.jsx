@@ -8,25 +8,27 @@ import SignInForm from "./components/SignInForm/SignInForm";
 import HomePage from "./components/HomePage/HomePage";
 import Dashboard from "./components/Dashboard/Dashboard";
 import { UserContext } from "./contexts/UserContext";
+import Library from "./components/Library/Library";
 
 function App() {
   const makeToastMessage = (text) => toast(text);
-  const {user} = useContext(UserContext)
+  const { user } = useContext(UserContext);
 
   return (
     <>
       <Navbar />
+
       <Routes>
-        <Route path="/" element={user ? <Dashboard/> : <HomePage />} />
+        <Route path="/" element={user ? <Dashboard /> : <HomePage />} />
         <Route
           path="/sign-up"
           element={<SignUpForm makeToastMessage={makeToastMessage} />}
         />
-        <Route
-          path="/sign-in"
-          element={<SignInForm/>}
-        />
+        <Route path="/sign-in" element={<SignInForm />} />
+
+        <Route path="/library" element={user ? <Library /> : <HomePage />} />
       </Routes>
+
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -38,7 +40,6 @@ function App() {
         draggable
         pauseOnHover
         theme="light"
-        // transition={Bounce}
       />
     </>
   );
@@ -46,19 +47,6 @@ function App() {
 
 export default App;
 
-/*
-
-    <Container>
-          <h1>My Fancy list</h1>
-          <ul>
-            <li>1</li>
-            <li>1</li>
-            <li>1</li>
-            <li>1</li>
-            <li>1</li>
-            <li>1</li>
-          </ul>
-      </Container> */
 
 function Container({ children }) {
   return (
