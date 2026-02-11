@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { searchGames } from "../services/gameService";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const SearchGames = () => {
   const [query, setQuery] = useState("");
@@ -8,7 +8,17 @@ const SearchGames = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
+
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.results) {
+      setResults(location.state.results);
+      setQuery(location.state.query || "");
+      setHasSearched(true);
+    }
+  }, [location.state]);
 
   const handleChange = (e) => {
     setQuery(e.target.value);
@@ -55,17 +65,32 @@ const SearchGames = () => {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <ul>
-        {results.length === 0 && !loading && !error && hasSearched && <p>No games found.</p>}
+        {results.length === 0 && !loading && !error && hasSearched && (
+          <p>No games found.</p>
+        )}
+
         {results.map((game) => (
           <li
             key={game.id || game._id}
-            onClick={() => navigate(`/games/details/${game.id}`)}
+            onClick={() =>
+              navigate(`/games/details/${game.id}`, {
+                state: {
+                  fromSearch: true,
+                  query,
+                  results
+                }
+              })
+            }
             style={{ cursor: "pointer" }}
           >
             <h3>{game.name || game.title}</h3>
             {game.cover?.url && (
               <img
-                src={game.cover.url.startsWith("//") ? `https:${game.cover.url}` : game.cover.url}
+                src={
+                  game.cover.url.startsWith("//")
+                    ? `https:${game.cover.url}`
+                    : game.cover.url
+                }
                 alt={game.name || game.title}
               />
             )}
