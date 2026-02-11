@@ -1,29 +1,48 @@
 import { useState, useEffect, useContext } from 'react';
+import { useParams } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 
 const Library = () => {
   const { user } = useContext(UserContext);
+  const { userId } = useParams();
+
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [otherUser, setOtherUser] = useState(null);
+
+  const isOwnLibrary = !userId || user?._id === userId;
 
   useEffect(() => {
-    const fetchGames = async () => {
+    const fetchLibrary = async () => {
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_BACKEND_SERVER_URL}/games`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
+        const endpoint = isOwnLibrary
+          ? `${import.meta.env.VITE_BACKEND_SERVER_URL}/games`
+          : `${import.meta.env.VITE_BACKEND_SERVER_URL}/games/user/${userId}`;
+
+        const res = await fetch(endpoint, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
-        );
+        });
 
         const data = await res.json();
-
         if (data.err) throw new Error(data.err);
-
         setGames(data);
+
+        if (!isOwnLibrary) {
+          const userRes = await fetch(
+            `${import.meta.env.VITE_BACKEND_SERVER_URL}/users/${userId}/public`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+              },
+            }
+          );
+          const userData = await userRes.json();
+          if (userData.err) throw new Error(userData.err);
+          setOtherUser(userData);
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -31,18 +50,23 @@ const Library = () => {
       }
     };
 
-    if (user) fetchGames();
-  }, [user]);
+    if (user) fetchLibrary();
+  }, [user, userId, isOwnLibrary]);
 
-  if (!user) return <p>Please sign in to view your library.</p>;
-  if (loading) return <p>Loading your library...</p>;
+  if (!user) return <p>Please sign in to view libraries.</p>;
+  if (loading) return <p>Loading library...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <main>
-      <h1>{user.username}'s Game Library</h1>
+      <h1>
+        {isOwnLibrary
+          ? `${user.username}'s Game Library`
+          : `${otherUser?.username || 'User'}'s Game Library`}
+      </h1>
+
       {games.length === 0 ? (
-        <p>You have no games in your library.</p>
+        <p>No games in this library.</p>
       ) : (
         <ul>
           {games.map((item) => (
