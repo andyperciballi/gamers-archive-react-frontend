@@ -22,11 +22,9 @@ function App() {
       <Navbar />
 
       <Routes>
-        <Route path="/" element={user ? <Dashboard /> : <HomePage />} />
-        <Route
-          path="/sign-up"
-          element={<SignUpForm makeToastMessage={makeToastMessage} />}
-        />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/dashboard" element={user ? <Dashboard /> : <HomePage />} />
+        <Route path="/sign-up" element={<SignUpForm makeToastMessage={makeToastMessage} />} />
         <Route path="/sign-in" element={<SignInForm />} />
         <Route path="/library" element={user ? <Library /> : <HomePage />} />
         <Route

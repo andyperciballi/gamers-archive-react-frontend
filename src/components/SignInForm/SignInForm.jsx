@@ -30,7 +30,7 @@ const SignInForm = () => {
 
       setUser(signedInUser);
       toast(`Welcome back ${signedInUser.username}`)
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       setMessage(err.message);
     }

@@ -26,7 +26,7 @@ const HomePage = () => {
     };
 
     fetchFeed();
-  }, []);
+  }, [user]);
 
   const normalizeCoverUrl = (url) => {
     if (!url) return "";
