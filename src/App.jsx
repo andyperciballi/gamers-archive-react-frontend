@@ -1,16 +1,17 @@
 import { useState, useContext } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import './App.css';
 import Navbar from './components/NavBar/NavBar';
 import SignUpForm from './components/SignUpForm/SignUpForm';
-import { BrowserRouter } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
 import SignInForm from './components/SignInForm/SignInForm';
 import HomePage from './pages/HomePage';
 import Dashboard from './pages/Dashboard';
-import { UserContext } from './contexts/UserContext';
 import Library from './pages/Library';
-import GameEdit from "./pages/GameEdit";
-import SearchGames from "./pages/SearchGames"
+import GameEdit from './pages/GameEdit';
+import SearchGames from './pages/SearchGames';
+import GameDetails from './pages/GameDetails';
+import { UserContext } from './contexts/UserContext';
+import { ToastContainer, toast } from 'react-toastify';
 
 function App() {
   const makeToastMessage = (text) => toast(text);
@@ -21,25 +22,13 @@ function App() {
       <Navbar />
 
       <Routes>
-  <Route path="/" element={user ? <Dashboard /> : <HomePage />} />
-
-  <Route
-    path="/sign-up"
-    element={<SignUpForm makeToastMessage={makeToastMessage} />}
-  />
-  <Route path="/sign-in" element={<SignInForm />} />
-
-  <Route path="/library" element={user ? <Library /> : <HomePage />} />
-
-  <Route
-    path="/games/:gameId/edit"
-    element={user ? <LibraryEdit /> : <HomePage />}
-  />
-</Routes>
-
+        <Route path="/" element={user ? <Dashboard /> : <HomePage />} />
+        <Route path="/sign-up" element={<SignUpForm makeToastMessage={makeToastMessage} />} />
+        <Route path="/sign-in" element={<SignInForm />} />
         <Route path="/library" element={user ? <Library /> : <HomePage />} />
-
-        <Route path="/search" element={<SearchGames />} />
+        <Route path="/search" element={user ? <SearchGames /> : <HomePage />} />
+        <Route path="/games/details/:igdbId" element={user ? <GameDetails /> : <HomePage />} />
+        <Route path="/games/:gameId/edit" element={user ? <GameEdit /> : <HomePage />} />
       </Routes>
 
       <ToastContainer
