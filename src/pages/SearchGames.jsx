@@ -1,38 +1,39 @@
-// src/pages/SearchGames.jsx
 import { useState } from "react";
 import { searchGames } from "../services/gameService";
 import { useNavigate } from "react-router-dom";
 
 const SearchGames = () => {
-  const [query, setQuery] = useState(""); 
-  const [results, setResults] = useState([]); 
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(""); 
+  const [error, setError] = useState("");
+  const [hasSearched, setHasSearched] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setQuery(e.target.value); 
-    setError(""); 
+    setQuery(e.target.value);
+    setError("");
   };
 
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!query) return;
 
-    setLoading(true); 
+    setLoading(true);
+    setHasSearched(true);
 
     try {
-      const games = await searchGames(query); 
+      const games = await searchGames(query);
 
       if (Array.isArray(games)) {
-        setResults(games); 
+        setResults(games);
       } else {
         setError("No results found.");
       }
     } catch (err) {
       setError("Something went wrong while searching.");
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -54,20 +55,20 @@ const SearchGames = () => {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <ul>
-        {results.length === 0 && !loading && !error && <p>No games found.</p>}
+        {results.length === 0 && !loading && !error && hasSearched && <p>No games found.</p>}
         {results.map((game) => (
-        <li
+          <li
             key={game.id || game._id}
             onClick={() => navigate(`/games/details/${game.id}`)}
             style={{ cursor: "pointer" }}
           >
-          <h3>{game.name || game.title}</h3>
-          {game.cover?.url && (
-          <img
-          src={game.cover.url.startsWith("//") ? `https:${game.cover.url}` : game.cover.url}
-          alt={game.name || game.title}
-          />
-              )}
+            <h3>{game.name || game.title}</h3>
+            {game.cover?.url && (
+              <img
+                src={game.cover.url.startsWith("//") ? `https:${game.cover.url}` : game.cover.url}
+                alt={game.name || game.title}
+              />
+            )}
             <p>{game.summary}</p>
           </li>
         ))}
