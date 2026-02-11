@@ -1,8 +1,8 @@
 import { useEffect, useState, useContext } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 
-const BASE_URL = import.meta.env.VITE_BACK_END_SERVER_URL;
+const BASE_URL = import.meta.env.VITE_BACKEND_SERVER_URL;
 
 const initialForm = {
   status: "Want to Play",
@@ -14,51 +14,67 @@ const initialForm = {
 export default function LibraryEdit() {
   const { gameId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useContext(UserContext);
+
+  const igdbGame = location.state?.igdbGame || null;
+  const isAdding = location.state?.isAdding || false;
 
   const [libraryItem, setLibraryItem] = useState(null);
   const [formData, setFormData] = useState(initialForm);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(!isAdding);
 
   useEffect(() => {
     if (!user) {
-      navigate(`/games/${gameId}`);
+      navigate("/");
       return;
     }
+
+    if (isAdding) return;
 
     async function fetchLibraryItem() {
       try {
         setError("");
-        const res = await fetch(`${BASE_URL}/api/library?gameId=${gameId}`, {
+        const res = await fetch(`${BASE_URL}/games`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
 
         if (!res.ok) {
-          navigate(`/games/${gameId}`);
+          setError("Failed to load library.");
+          setLoading(false);
           return;
         }
 
-        const data = await res.json();
-        setLibraryItem(data);
+        const library = await res.json();
+        const match = library.find((item) => item._id === gameId);
 
+        if (!match) {
+          setError("Library item not found.");
+          setLoading(false);
+          return;
+        }
+
+        setLibraryItem(match);
         setFormData({
-          status: data.status ?? "Want to Play",
-          hoursPlayed: data.hoursPlayed ?? 0,
-          notes: data.notes ?? "",
-          owned: data.owned ?? false,
+          status: match.status ?? "Want to Play",
+          hoursPlayed: match.hoursPlayed ?? 0,
+          notes: match.notes ?? "",
+          owned: match.owned ?? false,
         });
       } catch (err) {
         console.error(err);
         setError("Failed to load library entry.");
+      } finally {
+        setLoading(false);
       }
     }
 
     fetchLibraryItem();
-  }, [gameId, user, navigate]);
+  }, [gameId, user, navigate, isAdding]);
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]:
@@ -70,13 +86,50 @@ export default function LibraryEdit() {
     }));
   }
 
-  async function handleSubmit(e) {
+  async function handleAdd(e) {
+    e.preventDefault();
+    if (!igdbGame) return;
+
+    try {
+      setError("");
+      const res = await fetch(`${BASE_URL}/games`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          igdbGameId: igdbGame.id,
+          title: igdbGame.name,
+          coverUrl: igdbGame.cover?.url || "",
+          summary: igdbGame.summary || "",
+          platform: igdbGame.platforms?.map((p) => p.name) || [],
+          genre: igdbGame.genres?.map((g) => g.name) || [],
+          status: formData.status,
+          notes: formData.notes,
+        }),
+      });
+
+      if (!res.ok) {
+        const msg = await res.json().catch(() => null);
+        setError(msg?.err || "Failed to add game.");
+        return;
+      }
+
+      navigate(`/games/details/${igdbGame.id}`);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to add game.");
+    }
+  }
+
+  async function handleUpdate(e) {
     e.preventDefault();
     if (!libraryItem?._id) return;
 
     try {
       setError("");
-      const res = await fetch(`${BASE_URL}/api/library/${libraryItem._id}`, {
+      const res = await fetch(`${BASE_URL}/games/${libraryItem._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -87,11 +140,11 @@ export default function LibraryEdit() {
 
       if (!res.ok) {
         const msg = await res.json().catch(() => null);
-        setError(msg?.error || "Failed to save changes.");
+        setError(msg?.err || "Failed to save changes.");
         return;
       }
 
-      navigate(`/games/${gameId}`);
+      navigate("/library");
     } catch (err) {
       console.error(err);
       setError("Failed to save changes.");
@@ -99,15 +152,19 @@ export default function LibraryEdit() {
   }
 
   if (!user) return null;
-  if (!libraryItem) return <p>Loading library entry...</p>;
+  if (loading) return <p>Loading...</p>;
+
+  const title = isAdding
+    ? `Add "${igdbGame?.name}" to Library`
+    : "Edit Library Entry";
 
   return (
     <main>
-      <h1>Edit Library Entry</h1>
+      <h1>{title}</h1>
 
       {error && <p style={{ color: "crimson" }}>{error}</p>}
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={isAdding ? handleAdd : handleUpdate}>
         <label htmlFor="status">Status</label>
         <select
           id="status"
@@ -153,8 +210,8 @@ export default function LibraryEdit() {
           onChange={handleChange}
         />
 
-        <button type="submit">Save</button>
-        <Link style={{ marginLeft: 12 }} to={`/games/${gameId}`}>
+        <button type="submit">{isAdding ? "Add to Library" : "Save"}</button>
+        <Link style={{ marginLeft: 12 }} to={isAdding ? `/games/details/${igdbGame?.id}` : "/library"}>
           Cancel
         </Link>
       </form>
