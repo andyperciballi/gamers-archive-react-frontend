@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { AuthContext } from "../contexts/UserContext";
+import { UserContext } from "../contexts/UserContext";
 
 const BASE_URL = import.meta.env.VITE_BACK_END_SERVER_URL;
 
@@ -14,7 +14,7 @@ const initialForm = {
 export default function LibraryEdit() {
   const { gameId } = useParams();
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(UserContext);
 
   const [libraryItem, setLibraryItem] = useState(null);
   const [formData, setFormData] = useState(initialForm);
