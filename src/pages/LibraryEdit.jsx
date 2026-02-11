@@ -30,31 +30,25 @@ export default function LibraryEdit() {
       navigate("/");
       return;
     }
-
     if (isAdding) return;
 
     async function fetchLibraryItem() {
       try {
-        setError("");
         const res = await fetch(`${BASE_URL}/games`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
-
         if (!res.ok) {
           setError("Failed to load library.");
           setLoading(false);
           return;
         }
-
         const library = await res.json();
         const match = library.find((item) => item._id === gameId);
-
         if (!match) {
           setError("Library item not found.");
           setLoading(false);
           return;
         }
-
         setLibraryItem(match);
         setFormData({
           status: match.status ?? "Want to Play",
@@ -69,7 +63,6 @@ export default function LibraryEdit() {
         setLoading(false);
       }
     }
-
     fetchLibraryItem();
   }, [gameId, user, navigate, isAdding]);
 
@@ -89,7 +82,6 @@ export default function LibraryEdit() {
   async function handleAdd(e) {
     e.preventDefault();
     if (!igdbGame) return;
-
     try {
       setError("");
       const res = await fetch(`${BASE_URL}/games`, {
@@ -106,16 +98,16 @@ export default function LibraryEdit() {
           platform: igdbGame.platforms?.map((p) => p.name) || [],
           genre: igdbGame.genres?.map((g) => g.name) || [],
           status: formData.status,
+          hoursPlayed: formData.hoursPlayed,
           notes: formData.notes,
+          owned: formData.owned,
         }),
       });
-
       if (!res.ok) {
         const msg = await res.json().catch(() => null);
         setError(msg?.err || "Failed to add game.");
         return;
       }
-
       navigate(`/games/details/${igdbGame.id}`);
     } catch (err) {
       console.error(err);
@@ -126,7 +118,6 @@ export default function LibraryEdit() {
   async function handleUpdate(e) {
     e.preventDefault();
     if (!libraryItem?._id) return;
-
     try {
       setError("");
       const res = await fetch(`${BASE_URL}/games/${libraryItem._id}`, {
@@ -137,17 +128,36 @@ export default function LibraryEdit() {
         },
         body: JSON.stringify(formData),
       });
-
       if (!res.ok) {
         const msg = await res.json().catch(() => null);
         setError(msg?.err || "Failed to save changes.");
         return;
       }
-
       navigate("/library");
     } catch (err) {
       console.error(err);
       setError("Failed to save changes.");
+    }
+  }
+
+  async function handleDelete() {
+    if (!libraryItem?._id) return;
+    if (!window.confirm("Remove this game from your library?")) return;
+    try {
+      setError("");
+      const res = await fetch(`${BASE_URL}/games/${libraryItem._id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      if (!res.ok) {
+        const msg = await res.json().catch(() => null);
+        setError(msg?.err || "Failed to remove game.");
+        return;
+      }
+      navigate("/library");
+    } catch (err) {
+      console.error(err);
+      setError("Failed to remove game.");
     }
   }
 
@@ -161,17 +171,11 @@ export default function LibraryEdit() {
   return (
     <main>
       <h1>{title}</h1>
-
       {error && <p style={{ color: "crimson" }}>{error}</p>}
 
       <form onSubmit={isAdding ? handleAdd : handleUpdate}>
         <label htmlFor="status">Status</label>
-        <select
-          id="status"
-          name="status"
-          value={formData.status}
-          onChange={handleChange}
-        >
+        <select id="status" name="status" value={formData.status} onChange={handleChange}>
           <option value="Want to Play">Want to Play</option>
           <option value="Playing">Playing</option>
           <option value="Completed">Completed</option>
@@ -202,18 +206,17 @@ export default function LibraryEdit() {
         </label>
 
         <label htmlFor="notes">Notes</label>
-        <textarea
-          id="notes"
-          name="notes"
-          rows="4"
-          value={formData.notes}
-          onChange={handleChange}
-        />
+        <textarea id="notes" name="notes" rows="4" value={formData.notes} onChange={handleChange} />
 
-        <button type="submit">{isAdding ? "Add to Library" : "Save"}</button>
-        <Link style={{ marginLeft: 12 }} to={isAdding ? `/games/details/${igdbGame?.id}` : "/library"}>
-          Cancel
-        </Link>
+        <div className="form-actions">
+          <button type="submit">{isAdding ? "Add to Library" : "Save"}</button>
+          {!isAdding && (
+            <button type="button" className="delete-btn" onClick={handleDelete}>
+              Remove from Library
+            </button>
+          )}
+          <Link to={isAdding ? `/games/details/${igdbGame?.id}` : "/library"}>Cancel</Link>
+        </div>
       </form>
     </main>
   );
