@@ -1,11 +1,12 @@
 // src/pages/GameDetails.jsx
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { getGameDetails } from "../services/gameService";
 
 const GameDetails = () => {
   const { igdbId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [game, setGame] = useState(null);
   const [libraryItem, setLibraryItem] = useState(null);
@@ -29,13 +30,16 @@ const GameDetails = () => {
     fetchDetails();
   }, [igdbId]);
 
-  // Helper to fix IGDB image URLs
-  const fixImageUrl = (url) => {
+  const fixImageUrl = (url, size = "t_cover_big") => {
     if (!url) return null;
-    return url.startsWith("//") ? `https:${url}` : url;
+
+    const resizedUrl = url.replace(/t_[^/]+/, size);
+
+    return resizedUrl.startsWith("//")
+      ? `https:${resizedUrl}`
+      : resizedUrl;
   };
 
-  // Helper to format IGDB unix timestamp
   const formatDate = (timestamp) => {
     if (!timestamp) return "Unknown";
     return new Date(timestamp * 1000).toLocaleDateString();
@@ -45,10 +49,36 @@ const GameDetails = () => {
   if (error) return <p style={{ color: "red" }}>{error}</p>;
   if (!game) return <p>Game not found.</p>;
 
-  const coverUrl = fixImageUrl(game.cover?.url);
+  const coverUrl = fixImageUrl(game.cover?.url, "t_cover_big");
 
   return (
     <main style={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}>
+
+      <button
+        onClick={() => {
+          if (location.state?.fromSearch) {
+            navigate("/search", {
+              state: {
+                query: location.state.query,
+                results: location.state.results
+              }
+            });
+          } else {
+            navigate("/search");
+          }
+        }}
+        style={{
+          marginBottom: "20px",
+          background: "none",
+          border: "none",
+          color: "#007bff",
+          cursor: "pointer",
+          padding: 0,
+          fontSize: "14px"
+        }}
+      >
+        ← Back to Results
+      </button>
 
       {/* Game Header */}
       <div style={{ display: "flex", gap: "20px", marginBottom: "30px" }}>
