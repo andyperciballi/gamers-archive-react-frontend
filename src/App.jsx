@@ -7,7 +7,7 @@ import SignInForm from './components/SignInForm/SignInForm';
 import HomePage from './pages/HomePage';
 import Dashboard from './pages/Dashboard';
 import Library from './pages/Library';
-import GameEdit from './pages/GameEdit';
+import LibraryEdit from './pages/LibraryEdit';
 import SearchGames from './pages/SearchGames';
 import GameDetails from './pages/GameDetails';
 import { UserContext } from './contexts/UserContext';
@@ -27,9 +27,23 @@ function App() {
         <Route path="/sign-up" element={<SignUpForm makeToastMessage={makeToastMessage} />} />
         <Route path="/sign-in" element={<SignInForm />} />
         <Route path="/library" element={user ? <Library /> : <HomePage />} />
+        <Route
+          path="/library/:userId"
+          element={user ? <Library /> : <HomePage />}
+        />
         <Route path="/search" element={user ? <SearchGames /> : <HomePage />} />
-        <Route path="/games/details/:igdbId" element={user ? <GameDetails /> : <HomePage />} />
-        <Route path="/games/:gameId/edit" element={user ? <GameEdit /> : <HomePage />} />
+        <Route
+          path="/games/details/:igdbId"
+          element={user ? <GameDetails /> : <HomePage />}
+        />
+        <Route
+          path="/games/:gameId/edit"
+          element={user ? <LibraryEdit /> : <HomePage />}
+        />
+        <Route
+          path="/games/add/:gameId"
+          element={user ? <LibraryEdit /> : <HomePage />}
+        />
       </Routes>
 
       <ToastContainer
@@ -49,22 +63,3 @@ function App() {
 }
 
 export default App;
-
-function Container({ children }) {
-  return (
-    <div
-      style={{
-        height: '50vh',
-        width: '50vw',
-        backgroundColor: 'white',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'item',
-        color: 'black',
-      }}
-    >
-      {children}
-    </div>
-  );
-}
