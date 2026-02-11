@@ -83,7 +83,7 @@ const GameDetails = () => {
       )}
 
       {/* Library Status */}
-      <section style={{ marginBottom: "30px", padding: "15px", backgroundColor: "#f5f5f5", borderRadius: "8px" }}>
+      <section style={{ marginBottom: "30px", padding: "15px", backgroundColor: "light-dark(#f5f5f5, #242424)", borderRadius: "8px" }}>
         <h2>Your Library</h2>
         {libraryItem ? (
           <div>
