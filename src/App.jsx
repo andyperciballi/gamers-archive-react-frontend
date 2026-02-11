@@ -23,12 +23,25 @@ function App() {
 
       <Routes>
         <Route path="/" element={user ? <Dashboard /> : <HomePage />} />
-        <Route path="/sign-up" element={<SignUpForm makeToastMessage={makeToastMessage} />} />
+        <Route
+          path="/sign-up"
+          element={<SignUpForm makeToastMessage={makeToastMessage} />}
+        />
         <Route path="/sign-in" element={<SignInForm />} />
         <Route path="/library" element={user ? <Library /> : <HomePage />} />
+        <Route
+          path="/library/:userId"
+          element={user ? <Library /> : <HomePage />}
+        />
         <Route path="/search" element={user ? <SearchGames /> : <HomePage />} />
-        <Route path="/games/details/:igdbId" element={user ? <GameDetails /> : <HomePage />} />
-        <Route path="/games/:gameId/edit" element={user ? <GameEdit /> : <HomePage />} />
+        <Route
+          path="/games/details/:igdbId"
+          element={user ? <GameDetails /> : <HomePage />}
+        />
+        <Route
+          path="/games/:gameId/edit"
+          element={user ? <GameEdit /> : <HomePage />}
+        />
       </Routes>
 
       <ToastContainer
