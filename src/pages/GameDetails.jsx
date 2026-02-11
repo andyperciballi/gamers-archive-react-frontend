@@ -98,8 +98,14 @@ const GameDetails = () => {
         ) : (
           <div>
             <p>This game is not in your library yet.</p>
-            <button onClick={() => navigate(`/games/add/${igdbId}`)}>
-              Add to Library
+           <button
+              onClick={() =>
+                  navigate(`/games/add/${igdbId}`, {
+                  state: { igdbGame: game, isAdding: true },
+                  })
+                  }
+              >
+            Add to Library
             </button>
           </div>
         )}
