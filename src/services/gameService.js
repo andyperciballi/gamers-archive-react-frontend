@@ -1,19 +1,14 @@
 const BASE_URL = `${import.meta.env.VITE_BACKEND_SERVER_URL}/games`;
 
 const getAuthHeaders = (isJson = false) => {
-    const token = localStorage.getItem('token');
-    
-    const headers = {
-        'Authorization': `Bearer ${token}`,
-    };
+  const token = localStorage.getItem("token");
 
-    if (isJson) {
-        headers['Content-Type'] = 'application/json';
-    }
+  const headers = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+  if (isJson) headers["Content-Type"] = "application/json";
 
-    return headers;
+  return headers;
 };
-
 export const searchGames = async (query) => {
     try {
         const res = await fetch(`${BASE_URL}/search?query=${encodeURIComponent(query)}`, {
@@ -81,6 +76,30 @@ export const show = async (gameid) => {
 export const getGameDetails = async (igdbId) => {
   try {
     const res = await fetch(`${BASE_URL}/details/${igdbId}`, {
+      headers: getAuthHeaders(),
+    });
+    return await res.json();
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
+export const getHomeFeed = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/home`, {
+      headers: getAuthHeaders(),
+    });
+    return await res.json();
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
+
+export const getUpcoming = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/upcoming`, {
       headers: getAuthHeaders(),
     });
     return await res.json();
