@@ -1,12 +1,14 @@
 // src/pages/SearchGames.jsx
 import { useState } from "react";
 import { searchGames } from "../services/gameService";
+import { useNavigate } from "react-router-dom";
 
 const SearchGames = () => {
   const [query, setQuery] = useState(""); 
   const [results, setResults] = useState([]); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(""); 
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setQuery(e.target.value); 
@@ -54,9 +56,18 @@ const SearchGames = () => {
       <ul>
         {results.length === 0 && !loading && !error && <p>No games found.</p>}
         {results.map((game) => (
-          <li key={game.id || game._id}> 
-            <h3>{game.name || game.title}</h3>
-            <img src={game.cover?.url} alt={game.name || game.title} />
+        <li
+            key={game.id || game._id}
+            onClick={() => navigate(`/games/details/${game.id}`)}
+            style={{ cursor: "pointer" }}
+          >
+          <h3>{game.name || game.title}</h3>
+          {game.cover?.url && (
+          <img
+          src={game.cover.url.startsWith("//") ? `https:${game.cover.url}` : game.cover.url}
+          alt={game.name || game.title}
+          />
+              )}
             <p>{game.summary}</p>
           </li>
         ))}

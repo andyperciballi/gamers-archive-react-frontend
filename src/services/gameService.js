@@ -77,3 +77,15 @@ export const show = async (gameid) => {
         throw new Error(error.message); 
     }
 };
+
+export const getGameDetails = async (igdbId) => {
+  try {
+    const res = await fetch(`${BASE_URL}/details/${igdbId}`, {
+      headers: getAuthHeaders(),
+    });
+    return await res.json();
+  } catch (error) {
+    console.log(error);
+    throw new Error(error.message);
+  }
+};
