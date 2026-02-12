@@ -28,6 +28,9 @@ const Navbar = () => {
               <Link to="/search">Search Games</Link>
             </li>
             <li>
+              <Link to="/dashboard">Community</Link>
+            </li>
+            <li>
               <Link to="/" onClick={handleLogOut}>
                 Log Out
               </Link>

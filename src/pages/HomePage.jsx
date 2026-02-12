@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
+import { getAllUsers } from "../services/userService";
 import * as gameService from "../services/gameService";
 
 const HomePage = () => {
@@ -10,6 +11,7 @@ const HomePage = () => {
   const [feed, setFeed] = useState({ upcoming: [], trending: [], popular: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [communityUsers, setCommunityUsers] = useState([]);
 
   useEffect(() => {
     const fetchFeed = async () => {
@@ -31,6 +33,15 @@ const HomePage = () => {
     fetchFeed();
   }, [user]);
 
+  useEffect(() => {
+  if (!user) return;
+  const fetchUsers = async () => {
+    const data = await getAllUsers();
+    setCommunityUsers(data.users.filter(u => u._id !== user._id).slice(0, 4));
+  };
+  fetchUsers();
+}, [user]);
+
   const fixImageUrl = (url) => {
     if (!url) return null;
     return url.startsWith("//") ? `https:${url}` : url;
@@ -51,6 +62,19 @@ const HomePage = () => {
   return (
     <main>
       <h1>Home</h1>
+      {user && communityUsers.length > 0 && (
+  <section>
+    <h2>Community</h2>
+    <div className="user-grid">
+      {communityUsers.map(u => (
+        <div key={u._id} className="user-card">
+          <h3>{u.username}</h3>
+          <button onClick={() => navigate(`/library/${u._id}`)}>View Library</button>
+        </div>
+      ))}
+    </div>
+  </section>
+)}
 
       {["Upcoming Releases", "Trending", "Popular"].map((title) => {
         const key = title === "Upcoming Releases" ? "upcoming" : title.toLowerCase();
