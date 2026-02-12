@@ -21,7 +21,6 @@ const Navbar = () => {
 
         {user ? (
           <>
-            <li>{`Welcome back ${user.username}`}</li>
             <li>
               <Link to="/library">My Library</Link>
             </li>
