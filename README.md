@@ -1,16 +1,134 @@
-# React + Vite
+# 🎮 Gamers Archive
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Gamers Archive Screenshot or Logo](./public/screenshot.png)
 
-Currently, two official plugins are available:
+## 📖 Description
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Gamers Archive is a full-stack MERN application that allows users to discover, save, and manage their favorite video games.  
 
-## React Compiler
+The application integrates with the IGDB API to fetch game data and allows authenticated users to create, update, and delete personalized game entries.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Users can:
+- Sign up / Sign in securely using JWT authentication
+- Browse game data powered by IGDB
+- Create and manage personal game collections
+- Perform full CRUD operations on their saved games
+- Edit only the content they created
 
-## Expanding the ESLint configuration
+This project was built as a group MERN Stack CRUD application to demonstrate full-stack development skills including authentication, authorization, RESTful routing, and secure API integration.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🚀 Getting Started
+
+### 🔗 Deployed Application
+[Live App Link Here]
+
+### 📋 Planning Materials
+[Trello Board / Miro Board / ERD / Wireframes Link Here]
+
+### 🛠 Back-End Repository
+[Link to Back-End GitHub Repo Here]
+
+---
+
+## 🧱 Technologies Used
+
+### Front-End
+- React
+- React Router
+- JavaScript (ES6+)
+- CSS (Flexbox / Grid)
+- Axios (or Fetch API)
+
+### Back-End
+- Node.js
+- Express
+- MongoDB
+- Mongoose
+- JSON Web Tokens (JWT)
+- bcrypt
+
+### External API
+- IGDB API (accessed securely via back-end)
+
+---
+
+## 🔐 Authentication & Authorization
+
+- JWT-based authentication
+- Secure sign up, sign in, sign out functionality
+- Protected routes on front-end and back-end
+- Only the creator of a resource can edit or delete it
+- Guests cannot create, update, or delete data
+
+---
+
+## 🗂 Entity Relationship Overview
+
+- **User**
+- **Game**
+- **(Second Entity – e.g., Review / Collection / Comment)**
+
+At least one entity maintains a relationship with the User model.
+
+(Insert ERD image here if desired)
+
+---
+
+## 🎨 UI/UX Features
+
+- Consistent visual theme and color palette
+- Responsive layout using Flexbox/Grid
+- WCAG AA color contrast compliance
+- Styled buttons throughout
+- Forms are pre-filled when editing data
+- Navigation via links (no manual URL typing required)
+- All images include alt text
+
+---
+
+## 📸 Screenshots
+
+### Home Page
+![Home Screenshot](./public/home.png)
+
+### Dashboard
+![Dashboard Screenshot](./public/dashboard.png)
+
+---
+
+## 🙏 Attributions
+
+- [IGDB API](https://api-docs.igdb.com/)
+- Any icon libraries (e.g., Font Awesome)
+- Any UI inspiration or assets used
+
+(If none required, you may remove this section.)
+
+---
+
+## 🔮 Next Steps (Stretch Goals)
+
+- Add user profile customization
+- Add game rating system
+- Add sorting and filtering functionality
+- Add pagination or infinite scroll
+- Improve search functionality
+- Add social features (friends, sharing lists)
+- Add dark mode
+
+---
+
+## 👥 Contributors
+
+- Name 1
+- Name 2
+- Name 3
+
+---
+
+## 📦 Repositories
+
+Front-End Repo: [Link Here]  
+Back-End Repo: [Link Here]
