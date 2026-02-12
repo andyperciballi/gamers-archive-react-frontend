@@ -8,7 +8,7 @@ const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const navigate = useNavigate()
 
-  useEffect(() => {
+useEffect(() => {
   const fetchData = async () => {
     const allUsers = await getAllUsers();
     const filteredUsers = allUsers.users.filter(

@@ -28,7 +28,7 @@ const SignInForm = () => {
 
       setUser(signedInUser);
       toast(`Welcome back ${signedInUser.username}`)
-      navigate('/dashboard');
+      navigate('/');
     } catch (err) {
       setMessage(err.message);
     }
