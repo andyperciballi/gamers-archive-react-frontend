@@ -2,7 +2,6 @@ import { useContext, useState } from 'react';
 import { useNavigate, Link, NavLink } from 'react-router-dom';
 import { UserContext } from '../../contexts/UserContext';
 import { toast } from 'react-toastify';
-import logo from '../../../public/Gamers-Archive-Logo.png';
 
 const Navbar = () => {
   const { user, setUser } = useContext(UserContext);
@@ -25,7 +24,7 @@ const Navbar = () => {
 
         {/* Logo */}
         <Link to="/" className="navbar-logo" onClick={closeMenu}>
-          <img src={logo} alt="Gamers Archive" />
+          <img src="/Gamers-Archive-Logo.png" alt="Gamers Archive" />
           <span className="navbar-logo-text">Gamers Archive</span>
         </Link>
 
