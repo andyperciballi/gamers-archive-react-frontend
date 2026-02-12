@@ -1,15 +1,17 @@
 import { useContext } from 'react';
 import { UserContext } from '../../contexts/UserContext';
-import { Link } from 'react-router';
+import { Link, Navigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const Navbar = () => {
   const { user, setUser } = useContext(UserContext);
 
   const handleLogOut = () => {
+    e.preventDefault();
     localStorage.removeItem('token');
     setUser(null);
     toast('Successfully Logged Out');
+    navigate('/');
   };
 
   return (
