@@ -26,10 +26,7 @@ export default function LibraryEdit() {
   const [loading, setLoading] = useState(!isAdding);
 
   useEffect(() => {
-    if (!user) {
-      navigate("/");
-      return;
-    }
+    if (!user) { navigate("/"); return; }
     if (isAdding) return;
 
     async function fetchLibraryItem() {
@@ -37,18 +34,10 @@ export default function LibraryEdit() {
         const res = await fetch(`${BASE_URL}/games`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
-        if (!res.ok) {
-          setError("Failed to load library.");
-          setLoading(false);
-          return;
-        }
+        if (!res.ok) { setError("Failed to load library."); setLoading(false); return; }
         const library = await res.json();
         const match = library.find((item) => item._id === gameId);
-        if (!match) {
-          setError("Library item not found.");
-          setLoading(false);
-          return;
-        }
+        if (!match) { setError("Library item not found."); setLoading(false); return; }
         setLibraryItem(match);
         setFormData({
           status: match.status ?? "Want to Play",
@@ -70,12 +59,7 @@ export default function LibraryEdit() {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]:
-        type === "checkbox"
-          ? checked
-          : name === "hoursPlayed"
-          ? Number(value)
-          : value,
+      [name]: type === "checkbox" ? checked : name === "hoursPlayed" ? Number(value) : value,
     }));
   }
 
@@ -162,62 +146,108 @@ export default function LibraryEdit() {
   }
 
   if (!user) return null;
-  if (loading) return <p>Loading...</p>;
-
-  const title = isAdding
-    ? `Add "${igdbGame?.name}" to Library`
-    : "Edit Library Entry";
+  if (loading) return <div className="spinner" />;
 
   return (
-    <main>
-      <h1>{title}</h1>
-      {error && <p style={{ color: "crimson" }}>{error}</p>}
+    <main className="main-content">
+      <div className="auth-page" style={{ alignItems: 'flex-start', paddingTop: 'var(--space-xl)' }}>
+        <div className="auth-form-container">
 
-      <form onSubmit={isAdding ? handleAdd : handleUpdate}>
-        <label htmlFor="status">Status</label>
-        <select id="status" name="status" value={formData.status} onChange={handleChange}>
-          <option value="Want to Play">Want to Play</option>
-          <option value="Playing">Playing</option>
-          <option value="Completed">Completed</option>
-          <option value="On Hold">On Hold</option>
-          <option value="Dropped">Dropped</option>
-        </select>
-
-        <label htmlFor="hoursPlayed">Hours Played</label>
-        <input
-          id="hoursPlayed"
-          name="hoursPlayed"
-          type="number"
-          min="0"
-          step="1"
-          value={formData.hoursPlayed}
-          onChange={handleChange}
-        />
-
-        <label htmlFor="owned">
-          <input
-            id="owned"
-            name="owned"
-            type="checkbox"
-            checked={formData.owned}
-            onChange={handleChange}
-          />
-          Owned
-        </label>
-
-        <label htmlFor="notes">Notes</label>
-        <textarea id="notes" name="notes" rows="4" value={formData.notes} onChange={handleChange} />
-
-        <div className="form-actions">
-          <button type="submit">{isAdding ? "Add to Library" : "Save"}</button>
-          {!isAdding && (
-            <button type="button" className="delete-btn" onClick={handleDelete}>
-              Remove from Library
-            </button>
+          {/* Header */}
+          <h2>
+            {isAdding ? "Add to Library" : "Edit Entry"}
+          </h2>
+          {isAdding && igdbGame?.name && (
+            <p className="text-center text-muted mt-sm" style={{ marginBottom: 'var(--space-lg)' }}>
+              {igdbGame.name}
+            </p>
           )}
-          <Link to={isAdding ? `/games/details/${igdbGame?.id}` : "/library"}>Cancel</Link>
+
+          {error && <p className="error-text">{error}</p>}
+
+          <form onSubmit={isAdding ? handleAdd : handleUpdate}>
+
+            {/* Status */}
+            <div className="form-group">
+              <label htmlFor="status">Status</label>
+              <select id="status" name="status" value={formData.status} onChange={handleChange}>
+                <option value="Want to Play">Want to Play</option>
+                <option value="Playing">Playing</option>
+                <option value="Completed">Completed</option>
+                <option value="On Hold">On Hold</option>
+                <option value="Dropped">Dropped</option>
+              </select>
+            </div>
+
+            {/* Hours Played */}
+            <div className="form-group">
+              <label htmlFor="hoursPlayed">Hours Played</label>
+              <input
+                id="hoursPlayed"
+                name="hoursPlayed"
+                type="number"
+                min="0"
+                step="1"
+                value={formData.hoursPlayed}
+                onChange={handleChange}
+              />
+            </div>
+
+            {/* Notes */}
+            <div className="form-group">
+              <label htmlFor="notes">Notes</label>
+              <textarea
+                id="notes"
+                name="notes"
+                rows="4"
+                placeholder="Any thoughts on this game..."
+                value={formData.notes}
+                onChange={handleChange}
+              />
+            </div>
+
+            {/* Owned checkbox */}
+            <div className="form-group checkbox-group">
+              <label className="checkbox-label">
+                <input
+                  id="owned"
+                  name="owned"
+                  type="checkbox"
+                  checked={formData.owned}
+                  onChange={handleChange}
+                />
+                <span>I own this game</span>
+              </label>
+            </div>
+
+            {/* Actions */}
+            <div className="form-actions mt-md">
+              <button type="submit" className="btn-primary">
+                {isAdding ? "Add to Library" : "Save Changes"}
+              </button>
+              <Link to={isAdding ? `/games/details/${igdbGame?.id}` : "/library"}>
+                <button type="button" className="btn-secondary">Cancel</button>
+              </Link>
+            </div>
+
+            {/* Delete — only when editing */}
+            {!isAdding && (
+              <div style={{ marginTop: 'var(--space-lg)' }}>
+                <hr />
+                <button
+                  type="button"
+                  className="btn-danger"
+                  style={{ width: '100%', marginTop: 'var(--space-md)' }}
+                  onClick={handleDelete}
+                >
+                  Remove from Library
+                </button>
+              </div>
+            )}
+
+          </form>
         </div>
-      </form>
+      </div>
     </main>
   );
 }
