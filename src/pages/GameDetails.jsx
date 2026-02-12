@@ -1,18 +1,23 @@
 // src/pages/GameDetails.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { getGameDetails } from "../services/gameService";
+import { UserContext } from "../contexts/UserContext";
 
 const GameDetails = () => {
   const { igdbId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const {user} = useContext(UserContext);
 
   const [game, setGame] = useState(null);
   const [libraryItem, setLibraryItem] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [reviewForm, setReviewForm] = useState({ rating: 5, Text: "" });
+  const [showReviewForm, setShowReviewForm] = useState(false);
+
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -50,6 +55,56 @@ const GameDetails = () => {
   if (!game) return <p>Game not found.</p>;
 
   const coverUrl = fixImageUrl(game.cover?.url, "t_cover_big");
+
+
+  const handleAddReview = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await fetch(
+      `${import.meta.env.VITE_BACKEND_SERVER_URL}/reviews/game/${igdbId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(reviewForm),
+      }
+    );
+    if (!res.ok) {
+      const msg = await res.json().catch(() => null);
+      alert(msg?.err || "Failed to add review.");
+      return;
+    }
+    const newReview = await res.json();
+    setReviews((prev) => [...prev, newReview]);
+    setShowReviewForm(false);
+    setReviewForm({ rating: 5, Text: "" });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+  const handleDeleteReview = async (reviewId) => {
+    if (!window.confirm("Are you sure you want to delete this review?")) return;
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/reviews/${reviewId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      if (res.ok) {
+        setReviews((prev) => prev.filter((r) => r._id !== reviewId));
+      }
+    } catch (err) {
+      console.error("Error deleting review:", err);
+    }
+  };
 
   return (
     <main style={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}>
@@ -145,25 +200,64 @@ const GameDetails = () => {
       {/* Reviews */}
       <section>
         <h2>Reviews</h2>
-        {reviews.length === 0 ? (
-          <p>No reviews yet.</p>
-        ) : (
-          <ul style={{ listStyle: "none", padding: 0 }}>
+        {/* Only show "Write a Review" if user hasn't already reviewed */}
+{user && !reviews.some((r) => r.author?._id === user._id) && (
+  <div>
+    {showReviewForm ? (
+      <form onSubmit={handleAddReview}>
+        <label htmlFor="rating">Rating (1-10)</label>
+        <input
+          id="rating"
+          type="number"
+          min="1"
+          max="10"
+          value={reviewForm.rating}
+          onChange={(e) => setReviewForm({ ...reviewForm, rating: Number(e.target.value) })}
+        />
+        <label htmlFor="reviewText">Review</label>
+        <textarea
+          id="reviewText"
+          rows="4"
+          value={reviewForm.Text}
+          onChange={(e) => setReviewForm({ ...reviewForm, Text: e.target.value })}
+        />
+        <div className="form-actions">
+          <button type="submit">Submit Review</button>
+          <button type="button" onClick={() => setShowReviewForm(false)}>Cancel</button>
+        </div>
+      </form>
+    ) : (
+      <button onClick={() => setShowReviewForm(true)}>Write a Review</button>
+    )}
+  </div>
+)}
+
+{reviews.length === 0 ? (
+  <p>No reviews yet.</p>
+) : (
+          <ul>
             {reviews.map((review) => (
               <li
                 key={review._id}
-                style={{
-                  padding: "10px",
-                  marginBottom: "10px",
-                  border: "1px solid #ddd",
-                  borderRadius: "8px",
-                }}
               >
                 <p>
                   <strong>{review.author?.username || "Unknown"}</strong> — {review.rating}/10
                 </p>
                 {review.Text && <p>{review.Text}</p>}
                 <small>{new Date(review.createdAt).toLocaleDateString()}</small>
+
+                {user && user._id === review.author?._id && (
+                  <div className="review-actions">
+                    <button onClick={() => navigate(`/reviews/${review._id}/edit`, {
+                      state: { review, igdbId }
+                    })}>
+                      Edit
+                    </button>
+                    <button className="delete-btn" onClick={() => handleDeleteReview(review._id)}>
+                      Delete
+                    </button>
+                  </div>
+                )}
               </li>
             ))}
           </ul>

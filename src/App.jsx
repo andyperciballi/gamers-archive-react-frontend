@@ -12,6 +12,7 @@ import SearchGames from './pages/SearchGames';
 import GameDetails from './pages/GameDetails';
 import { UserContext } from './contexts/UserContext';
 import { ToastContainer, toast } from 'react-toastify';
+import ReviewEdit from './pages/ReviewEdit';
 
 function App() {
   const makeToastMessage = (text) => toast(text);
@@ -22,6 +23,7 @@ function App() {
       <Navbar />
 
       <Routes>
+        <Route path ="/reviews/:id/edit" element={user ? <ReviewEdit /> : <HomePage />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/dashboard" element={user ? <Dashboard /> : <HomePage />} />
         <Route path="/sign-up" element={<SignUpForm makeToastMessage={makeToastMessage} />} />
