@@ -49,14 +49,34 @@ const HomePage = () => {
     return url.startsWith('//') ? `https:${url}` : url;
   };
 
-  const formatDate = (unixSeconds) => {
-    if (!unixSeconds) return '';
-    return new Date(unixSeconds * 1000).toLocaleDateString(undefined, {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
+const formatDate = (unixSeconds) => {
+  if (!unixSeconds) return "TBA";
+  
+  const date = new Date(unixSeconds * 1000);
+  const day = date.getDate();
+  const month = date.getMonth();
+  
+  // Check if this is the common placeholder date (Feb 12, 2026)
+  if (day === 12 && month === 1) {
+    return date.getFullYear() + " (TBA)";
+  }
+  
+  // If the day is the 1st or 13th, it's likely a placeholder
+  // Or if it's Dec 31, also likely a placeholder
+  if (day === 1 || day === 13 || (day === 31 && month === 11)) {
+    return date.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+    }) + " (TBA)";
+  }
+  
+  // Show full date for what looks like a real release date
+  return date.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
 
   if (loading) return <p>Loading homepage games...</p>;
   if (error) return <p className="error">{error}</p>;
