@@ -21,6 +21,14 @@ This project was built as a group MERN Stack CRUD application to demonstrate ful
 
 ## 🚀 Getting Started
 
+## User Stories
+- as a user I would like to create a secure account, login and logout using a nav bar
+- as a user I'd like to browse search feature and add games to my library
+- as a user I'd like to write reviews for games 
+- as a user I would like to explore my existing library and other community members libraries
+- as a user I'd like to see the game details as well as my own progress towards individual games
+- as a user i'd like to edit and delete games from my library and reviews
+
 ### 🔗 Deployed Application
 [Live App Link Here]
 
