@@ -21,14 +21,47 @@ This project was built as a group MERN Stack CRUD application to demonstrate ful
 
 ## 🚀 Getting Started
 
+## User Stories
+- as a user I would like to create a secure account, login and logout using a nav bar
+- as a user I'd like to browse search feature and add games to my library
+- as a user I'd like to write reviews for games 
+- as a user I would like to explore my existing library and other community members libraries
+- as a user I'd like to see the game details as well as my own progress towards individual games
+- as a user i'd like to edit and delete games from my library and reviews
+
 ### 🔗 Deployed Application
 [Live App Link Here]
 
 ### 📋 Planning Materials
-[Trello Board / Miro Board / ERD / Wireframes Link Here]
+![alt text](image.png)
+
+┌──────────────┐       ┌──────────────────┐       ┌──────────────┐
+│    User       │       │   LibraryItem     │       │   ApiGame     │
+├──────────────┤       │   (join table)    │       ├──────────────┤
+│ _id (PK)      │──1:M──│ userId (FK)        │──M:1──│ _id (PK)      │
+│ username      │       │ gameId (FK)        │       │ igdbGameId    │
+│ email         │       │ status            │       │ title         │
+│ password      │       │ hoursPlayed       │       │ coverUrl      │
+│ avatar        │       │ notes             │       │ summary       │
+│ createdAt     │       │ owned             │       │ releaseDate   │
+└──────┬───────┘       │ createdAt         │       │ rating        │
+       │                └──────────────────┘       │ platform[]    │
+       │                                            │ genre[]       │
+       │                ┌──────────────────┐       │ source        │
+       │                │     Review        │       │ createdAt     │
+       │                │   (join table)    │       └──────┬───────┘
+       └───────1:M──────│ author (FK)        │              │
+                        │ gameId (FK)        │──M:1─────────┘
+                        │ rating            │
+                        │ Text              │
+                        │ createdAt         │
+                        │ UNIQUE(gameId,    │
+                        │        author)    │
+                        └──────────────────┘
 
 ### 🛠 Back-End Repository
-[Link to Back-End GitHub Repo Here]
+
+https://github.com/andyperciballi/gamers-archive-backend
 
 ---
 
@@ -66,15 +99,12 @@ This project was built as a group MERN Stack CRUD application to demonstrate ful
 
 ## 🗂 Entity Relationship Overview
 
-- **User**
-- **Game**
-- **(Second Entity – e.g., Review / Collection / Comment)**
+- User
+- APIGame
+- Library Item
+- Review
 
-At least one entity maintains a relationship with the User model.
-
-(Insert ERD image here if desired)
-
----
+Library items are owned by users but API Game items store a larger dataset relating to a library item. Reviews are tied to the API game and not the library item so if users remove games from libraries the game will retain the reviews
 
 ## 🎨 UI/UX Features
 
@@ -103,15 +133,15 @@ At least one entity maintains a relationship with the User model.
 - [IGDB API](https://api-docs.igdb.com/)
 - Any icon libraries (e.g., Font Awesome)
 - Any UI inspiration or assets used
-
-(If none required, you may remove this section.)
+- Claude Code, ChatGPT and Emmet abbreviations for Code guidance
+- ChatGPT for logo design
+- General Assembly Class notes and lecture materials 
 
 ---
 
 ## 🔮 Next Steps (Stretch Goals)
 
 - Add user profile customization
-- Add game rating system
 - Add sorting and filtering functionality
 - Add pagination or infinite scroll
 - Improve search functionality
@@ -122,13 +152,13 @@ At least one entity maintains a relationship with the User model.
 
 ## 👥 Contributors
 
-- Name 1
-- Name 2
-- Name 3
+- Andrew Perciballi
+- Felicia Bossom
+- William De Los Santos
 
 ---
 
 ## 📦 Repositories
 
-Front-End Repo: [Link Here]  
-Back-End Repo: [Link Here]
+Front-End Repo: [https://github.com/andyperciballi/gamers-archive-react-frontend]
+Back-End Repo: [https://github.com/andyperciballi/gamers-archive-backend]
