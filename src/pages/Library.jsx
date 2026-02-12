@@ -4,6 +4,15 @@ import { UserContext } from "../contexts/UserContext";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_SERVER_URL;
 
+const fixImageUrl = (url, size = "cover_big") => {
+  if (!url) return null;
+  let fixed = url.startsWith("//") ? `https:${url}` : url;
+  if (/t_[^/]+/.test(fixed)) {
+    fixed = fixed.replace(/t_[^/]+/, `t_${size}`);
+  }
+  return fixed;
+};
+
 const Library = () => {
   const { user } = useContext(UserContext);
   const { userId } = useParams();
@@ -63,63 +72,127 @@ const Library = () => {
     }
   }
 
-  if (!user) return <p>Please sign in to view libraries.</p>;
-  if (loading) return <p>Loading library...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (!user) return <p className="error-text">Please sign in to view libraries.</p>;
+  if (loading) return <div className="spinner" />;
+  if (error) return <p className="error-text">Error: {error}</p>;
+
+  const ownerName = isOwnLibrary
+    ? user.username
+    : otherUser?.username || "User";
 
   return (
-    <main>
-      <h1>
-        {isOwnLibrary
-          ? `${user.username}'s Game Library`
-          : `${otherUser?.username || "User"}'s Game Library`}
-      </h1>
+    <main className="main-content">
+
+      {/* Header */}
+      <div className="page-header">
+        <h1>
+          <span className="gradient-text">{ownerName}</span>'s Library
+        </h1>
+        <p>{games.length} {games.length === 1 ? "game" : "games"} in collection</p>
+      </div>
 
       {games.length === 0 ? (
-        <p>No games in this library.</p>
+        <div className="empty-state">
+          <p>No games in this library yet.</p>
+          {isOwnLibrary && (
+            <button
+              className="btn-primary mt-md"
+              onClick={() => navigate("/search")}
+            >
+              Find Games to Add
+            </button>
+          )}
+        </div>
       ) : (
-        <ul>
-          {games.map((item) => (
-            <li key={item._id}>
-              <h2
-                className="game-link"
-                onClick={() => navigate(`/games/details/${item.gameId?.igdbGameId}`)}
-                style={{ cursor: "pointer" }}
-              >
-                {item.gameId?.title}
-              </h2>
-              <p>Status: {item.status}</p>
-              <p>Hours: {item.hoursPlayed}</p>
-              {item.notes && <p>Notes: {item.notes}</p>}
+        <ul className="library-grid" style={{ listStyle: "none", padding: 0 }}>
+          {games.map((item) => {
+            const coverUrl = fixImageUrl(item.gameId?.coverUrl);
+            return (
+              <li key={item._id} className="game-card">
 
-              {isOwnLibrary ? (
-                <div className="library-actions">
-                  <button onClick={() => navigate(`/games/${item._id}/edit`)}>Edit</button>
-                  <button className="delete-btn" onClick={() => handleDelete(item._id)}>Remove</button>
+                {/* Cover Image */}
+                {coverUrl ? (
+                  <img
+                    className="game-card-image"
+                    src={coverUrl}
+                    alt={item.gameId?.title}
+                    onClick={() => navigate(`/games/details/${item.gameId?.igdbGameId}`)}
+                  />
+                ) : (
+                  <div
+                    className="game-card-image game-card-no-cover"
+                    onClick={() => navigate(`/games/details/${item.gameId?.igdbGameId}`)}
+                  >
+                    <span>No Cover</span>
+                  </div>
+                )}
+
+                {/* Card Body */}
+                <div className="game-card-body">
+                  <p
+                    className="game-card-title"
+                    onClick={() => navigate(`/games/details/${item.gameId?.igdbGameId}`)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {item.gameId?.title}
+                  </p>
+
+                  {/* Status + Hours tags */}
+                  <div className="library-card-tags">
+                    <span className="tag">{item.status}</span>
+                    {item.hoursPlayed > 0 && (
+                      <span className="tag">{item.hoursPlayed}hrs</span>
+                    )}
+                  </div>
+
+                  {item.notes && (
+                    <p className="game-card-meta" style={{ fontStyle: "italic" }}>
+                      "{item.notes}"
+                    </p>
+                  )}
+
+                  {/* Actions */}
+                  {isOwnLibrary ? (
+                    <div className="library-card-actions">
+                      <button
+                        className="btn-secondary"
+                        onClick={() => navigate(`/games/${item._id}/edit`)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="btn-danger"
+                        onClick={() => handleDelete(item._id)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      className="btn-primary"
+                      onClick={() =>
+                        navigate(`/games/add/${item.gameId?.igdbGameId}`, {
+                          state: {
+                            igdbGame: {
+                              id: item.gameId?.igdbGameId,
+                              name: item.gameId?.title,
+                              cover: { url: item.gameId?.coverUrl },
+                              summary: item.gameId?.summary,
+                              platforms: item.gameId?.platform?.map((p) => ({ name: p })),
+                              genres: item.gameId?.genre?.map((g) => ({ name: g })),
+                            },
+                            isAdding: true,
+                          },
+                        })
+                      }
+                    >
+                      Add to My Library
+                    </button>
+                  )}
                 </div>
-              ) : (
-                <button
-                  onClick={() =>
-                    navigate(`/games/add/${item.gameId?.igdbGameId}`, {
-                      state: {
-                        igdbGame: {
-                          id: item.gameId?.igdbGameId,
-                          name: item.gameId?.title,
-                          cover: { url: item.gameId?.coverUrl },
-                          summary: item.gameId?.summary,
-                          platforms: item.gameId?.platform?.map((p) => ({ name: p })),
-                          genres: item.gameId?.genre?.map((g) => ({ name: g })),
-                        },
-                        isAdding: true,
-                      },
-                    })
-                  }
-                >
-                  Add to My Library
-                </button>
-              )}
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       )}
     </main>
