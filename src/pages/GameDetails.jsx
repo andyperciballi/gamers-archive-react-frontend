@@ -55,30 +55,30 @@ const GameDetails = () => {
     <main style={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}>
 
       <button
-        onClick={() => {
-          if (location.state?.fromSearch) {
-            navigate("/search", {
-              state: {
-                query: location.state.query,
-                results: location.state.results
-              }
-            });
-          } else {
-            navigate("/search");
-          }
-        }}
-        style={{
-          marginBottom: "20px",
-          background: "none",
-          border: "none",
-          color: "#007bff",
-          cursor: "pointer",
-          padding: 0,
-          fontSize: "14px"
-        }}
-      >
-        ← Back to Results
-      </button>
+  onClick={() => {
+    if (location.state?.fromSearch) {
+      navigate("/search", {
+        state: {
+          query: location.state.query,
+          results: location.state.results
+        }
+      });
+    } else {
+      navigate("/");
+    }
+  }}
+  style={{
+    marginBottom: "20px",
+    background: "none",
+    border: "none",
+    color: "#007bff",
+    cursor: "pointer",
+    padding: 0,
+    fontSize: "14px"
+  }}
+>
+  ← {location.state?.fromSearch ? "Back to Search Results" : "Back to Home"}
+</button>
 
       {/* Game Header */}
       <div style={{ display: "flex", gap: "20px", marginBottom: "30px" }}>

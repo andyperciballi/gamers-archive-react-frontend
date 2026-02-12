@@ -21,12 +21,14 @@ const Navbar = () => {
 
         {user ? (
           <>
-            <li>{`Welcome back ${user.username}`}</li>
             <li>
               <Link to="/library">My Library</Link>
             </li>
             <li>
               <Link to="/search">Search Games</Link>
+            </li>
+            <li>
+              <Link to="/dashboard">Community</Link>
             </li>
             <li>
               <Link to="/" onClick={handleLogOut}>
