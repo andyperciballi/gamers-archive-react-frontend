@@ -1,13 +1,14 @@
 import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../contexts/UserContext';
-import { Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const Navbar = () => {
   const { user, setUser } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const handleLogOut = () => {
-    e.preventDefault();
     localStorage.removeItem('token');
     setUser(null);
     toast('Successfully Logged Out');
@@ -33,9 +34,7 @@ const Navbar = () => {
               <Link to="/dashboard">Community</Link>
             </li>
             <li>
-              <Link to="/" onClick={handleLogOut}>
-                Log Out
-              </Link>
+               <button onClick={handleLogOut}>Log Out</button>
             </li>
           </>
         ) : (

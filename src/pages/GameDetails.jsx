@@ -90,7 +90,7 @@ const GameDetails = () => {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/reviews/${reviewId}`,
+        `${import.meta.env.VITE_BACKEND_SERVER_URL}/reviews/${reviewId}`,
         {
           method: "DELETE",
           headers: {
