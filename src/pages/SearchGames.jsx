@@ -2,6 +2,32 @@ import { useState, useEffect } from "react";
 import { searchGames } from "../services/gameService";
 import { useNavigate, useLocation } from "react-router-dom";
 
+const fixImageUrl = (url, size = "cover_big") => {
+  if (!url) return null;
+  let fixed = url.startsWith("//") ? `https:${url}` : url;
+  if (/t_[^/]+/.test(fixed)) {
+    fixed = fixed.replace(/t_[^/]+/, `t_${size}`);
+  }
+  return fixed;
+};
+
+const ReadMore = ({ text, limit = 80 }) => {
+  const [expanded, setExpanded] = useState(false);
+  if (!text) return null;
+  if (text.length <= limit) return <p className="game-card-meta">{text}</p>;
+  return (
+    <p className="game-card-meta">
+      {expanded ? text : `${text.slice(0, limit)}...`}
+      <button
+        className="read-more-btn"
+        onClick={(e) => { e.stopPropagation(); setExpanded(!expanded); }}
+      >
+        {expanded ? " Less" : " More"}
+      </button>
+    </p>
+  );
+};
+
 const SearchGames = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -27,14 +53,11 @@ const SearchGames = () => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (!query) return;
-
+    if (!query.trim()) return;
     setLoading(true);
     setHasSearched(true);
-
     try {
       const games = await searchGames(query);
-
       if (Array.isArray(games)) {
         setResults(games);
       } else {
@@ -48,56 +71,78 @@ const SearchGames = () => {
   };
 
   return (
-    <main>
-      <h1>Search Games</h1>
+    <main className="main-content">
 
-      <form onSubmit={handleSearch}>
+      {/* Header */}
+      <div className="page-header">
+        <h1>Search <span className="gradient-text">Games</span></h1>
+        <p>Find any game in the IGDB database.</p>
+      </div>
+
+      {/* Search Bar */}
+      <form className="search-bar" onSubmit={handleSearch}>
         <input
           type="text"
           placeholder="Search for a game..."
           value={query}
           onChange={handleChange}
         />
-        <button type="submit">Search</button>
+        <button type="submit" className="btn-primary">
+          Search
+        </button>
       </form>
 
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {/* States */}
+      {loading && <div className="spinner" />}
+      {error && <p className="error-text">{error}</p>}
+      {results.length === 0 && !loading && !error && hasSearched && (
+        <div className="empty-state">
+          <p>No games found for "{query}".</p>
+        </div>
+      )}
 
-      <ul>
-        {results.length === 0 && !loading && !error && hasSearched && (
-          <p>No games found.</p>
-        )}
-
-        {results.map((game) => (
-          <li
-            key={game.id || game._id}
-            onClick={() =>
-              navigate(`/games/details/${game.id}`, {
-                state: {
-                  fromSearch: true,
-                  query,
-                  results
-                }
-              })
-            }
-            style={{ cursor: "pointer" }}
-          >
-            <h3>{game.name || game.title}</h3>
-            {game.cover?.url && (
-              <img
-                src={
-                  game.cover.url.startsWith("//")
-                    ? `https:${game.cover.url}`
-                    : game.cover.url
-                }
-                alt={game.name || game.title}
-              />
-            )}
-            <p>{game.summary}</p>
-          </li>
-        ))}
-      </ul>
+      {/* Results Grid */}
+      {results.length > 0 && !loading && (
+        <>
+          <p className="search-results-count text-muted text-sm mt-sm">
+            {results.length} result{results.length !== 1 ? "s" : ""} for "{query}"
+          </p>
+          <ul className="game-grid mt-md" style={{ listStyle: "none", padding: 0 }}>
+            {results.map((game) => {
+              const coverUrl = fixImageUrl(game.cover?.url);
+              return (
+                <li
+                  key={game.id || game._id}
+                  className="game-card"
+                  onClick={() =>
+                    navigate(`/games/details/${game.id}`, {
+                      state: { fromSearch: true, query, results },
+                    })
+                  }
+                >
+                  {coverUrl ? (
+                    <img
+                      className="game-card-image"
+                      src={coverUrl}
+                      alt={game.name || game.title}
+                    />
+                  ) : (
+                    <div className="game-card-image game-card-no-cover">
+                      <span>No Cover</span>
+                    </div>
+                  )}
+                  <div className="game-card-body">
+                    <p className="game-card-title">{game.name || game.title}</p>
+                  {game.summary && (
+                      <ReadMore text={game.summary} limit={80} />
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      )}
     </main>
   );
 };

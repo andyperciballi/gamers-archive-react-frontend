@@ -1,6 +1,6 @@
 # 🎮 Gamers Archive
 
-![Gamers Archive Screenshot or Logo](./public/screenshot.png)
+![Gamers Archive Logo](./public/Gamers-Archive-Logo.png)
 
 ## 📖 Description
 
