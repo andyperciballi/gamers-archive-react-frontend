@@ -31,7 +31,7 @@ const HomePage = () => {
       }
     };
     fetchFeed();
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     if (!user) return;
