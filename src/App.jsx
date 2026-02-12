@@ -22,25 +22,30 @@ function App() {
       <Navbar />
 
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/dashboard" element={user ? <Dashboard /> : <HomePage />} />
-        <Route path="/sign-up" element={<SignUpForm makeToastMessage={makeToastMessage} />} />
-        <Route path="/sign-in" element={<SignInForm />} />
-        <Route path="/library" element={user ? <Library /> : <HomePage />} />
-        <Route
-          path="/library/:userId"
-          element={user ? <Library /> : <HomePage />}
-        />
-        <Route path="/search" element={user ? <SearchGames /> : <HomePage />} />
-        <Route
-          path="/games/details/:igdbId"
-          element={user ? <GameDetails /> : <HomePage />}
-        />
-        <Route
-          path="/games/:gameId/edit"
-          element={user ? <GameEdit /> : <HomePage />}
-        />
-      </Routes>
+  {/* Always public */}
+  <Route path="/" element={<HomePage />} />
+
+  <Route
+    path="/sign-up"
+    element={<SignUpForm makeToastMessage={makeToastMessage} />}
+  />
+  <Route path="/sign-in" element={<SignInForm />} />
+
+  {/* Protected pages */}
+  <Route
+    path="/dashboard"
+    element={user ? <Dashboard /> : <Navigate to="/sign-in" />}
+  />
+  <Route
+    path="/library"
+    element={user ? <Library /> : <Navigate to="/sign-in" />}
+  />
+  <Route
+    path="/search"
+    element={user ? <SearchGames /> : <Navigate to="/sign-in" />}
+  />
+</Routes>
+
 
       <ToastContainer
         position="top-right"
