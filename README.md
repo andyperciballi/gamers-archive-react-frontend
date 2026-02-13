@@ -30,7 +30,7 @@ This project was built as a group MERN Stack CRUD application to demonstrate ful
 - as a user i'd like to edit and delete games from my library and reviews
 
 ### 🔗 Deployed Application
-[Live App Link Here]
+https://gamers-archive.netlify.app/
 
 ### 📋 Planning Materials
 ![alt text](image.png)
