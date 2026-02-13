@@ -30,34 +30,11 @@ This project was built as a group MERN Stack CRUD application to demonstrate ful
 - as a user i'd like to edit and delete games from my library and reviews
 
 ### 🔗 Deployed Application
-[Live App Link Here]
+[Gamers Archive Live App Link Here](https://gamers-archive.netlify.app/)
 
 ### 📋 Planning Materials
-![alt text](image.png)
-
-┌──────────────┐       ┌──────────────────┐       ┌──────────────┐
-│    User       │       │   LibraryItem     │       │   ApiGame     │
-├──────────────┤       │   (join table)    │       ├──────────────┤
-│ _id (PK)      │──1:M──│ userId (FK)        │──M:1──│ _id (PK)      │
-│ username      │       │ gameId (FK)        │       │ igdbGameId    │
-│ email         │       │ status            │       │ title         │
-│ password      │       │ hoursPlayed       │       │ coverUrl      │
-│ avatar        │       │ notes             │       │ summary       │
-│ createdAt     │       │ owned             │       │ releaseDate   │
-└──────┬───────┘       │ createdAt         │       │ rating        │
-       │                └──────────────────┘       │ platform[]    │
-       │                                            │ genre[]       │
-       │                ┌──────────────────┐       │ source        │
-       │                │     Review        │       │ createdAt     │
-       │                │   (join table)    │       └──────┬───────┘
-       └───────1:M──────│ author (FK)        │              │
-                        │ gameId (FK)        │──M:1─────────┘
-                        │ rating            │
-                        │ Text              │
-                        │ createdAt         │
-                        │ UNIQUE(gameId,    │
-                        │        author)    │
-                        └──────────────────┘
+![trello](image.png)
+[Trello Link](https://trello.com/b/omouHUTd/to-game)
 
 ### 🛠 Back-End Repository
 
@@ -121,10 +98,7 @@ Library items are owned by users but API Game items store a larger dataset relat
 ## 📸 Screenshots
 
 ### Home Page
-![Home Screenshot](./public/home.png)
-
-### Dashboard
-![Dashboard Screenshot](./public/dashboard.png)
+![Home Screenshot](Home-screenshot.png)
 
 ---
 
