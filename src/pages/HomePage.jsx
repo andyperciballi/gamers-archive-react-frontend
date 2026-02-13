@@ -139,7 +139,7 @@ const HomePage = () => {
                   <p className="game-card-meta">{formatDate(game.first_release_date)}</p>
                   {game.total_rating && (
                     <p className="game-card-meta">
-                      ⭐ {Math.round(game.total_rating)}/100
+                       {Math.round(game.total_rating)}/100
                     </p>
                   )}
                 </div>

@@ -133,9 +133,9 @@ const GameDetails = () => {
         <div className="game-details-info">
           <h1 className="game-details-title">{game.name}</h1>
           <div className="game-meta-tags">
-            <span className="tag">📅 {formatDate(game.first_release_date)}</span>
+            <span className="tag"> {formatDate(game.first_release_date)}</span>
             {game.total_rating && (
-              <span className="tag">⭐ {Math.round(game.total_rating)}/100</span>
+              <span className="tag"> {Math.round(game.total_rating)}/100</span>
             )}
           </div>
           {game.genres && (
@@ -168,9 +168,9 @@ const GameDetails = () => {
           <div className="library-info">
             <p>This title is in your library.</p>
             <div className="library-stats">
-              <span className="tag">📖 {libraryItem.status}</span>
-              <span className="tag">⏱ {libraryItem.hoursPlayed}hrs</span>
-              {libraryItem.owned && <span className="tag">✅ Owned</span>}
+              <span className="tag"> {libraryItem.status}</span>
+              <span className="tag"> {libraryItem.hoursPlayed}hrs</span>
+              {libraryItem.owned && <span className="tag"> Owned</span>}
             </div>
             {libraryItem.notes && (
               <p className="library-notes">"{libraryItem.notes}"</p>
